@@ -1,9 +1,10 @@
-const express = require('express');
+const express = require("express");
+const createcus = require("../controllers/signup");
+const verifyOTP = require("../controllers/otpverification");
+
 const router = express.Router();
-// const authController = require('../controllers/authController');
-const createCustomer = require('../controllers/signup');
 
+router.post("/signup", createcus);
+router.post("/verify-otp", verifyOTP);
 
-router.post('/signup', createCustomer);
 module.exports = router;
-

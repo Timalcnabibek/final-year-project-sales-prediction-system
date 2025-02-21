@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup Page</title>
     <link rel="stylesheet" href="signup.css">
-    <style>
-        /* Inline CSS */
-    </style>
+    <link rel="stylesheet" href="loading.css">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-minimal/minimal.css" rel="stylesheet">
+
+
 </head>
 
 <body>
@@ -34,7 +35,7 @@
         <h2>Create a New Account</h2>
         <form id="signupForm">
             <div class="form-group">
-                <label for="username">Username</label>
+                <label for="username">Full Name</label>
                 <input type="text" id="username" name="username" placeholder="Enter your name" required>
             </div>
             <div class="form-group">
@@ -56,69 +57,120 @@
             </div>
             <div class="form-footer">
                 <div class="already">
-                    <p>Already have an account? <a href="./login.html">Create here...</a></p>
+                    <p>Already have an account? <a href="./login.html">Login here...</a></p>
                 </div>
                 <div>
                     <button type="submit">Next</button>
                 </div>
             </div>
         </form>
+
+        <div class="load-wrapp">
+            <div class="load-9">
+                <p>Please wait...</p>
+                <div class="spinner">
+                    <div class="bubble-1"></div>
+                    <div class="bubble-2"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Capture the form element
-        const signupForm = document.getElementById('signupForm');
+const loader = document.querySelector('.load-wrapp')
 
-        // Add event listener to handle form submission
-        signupForm.addEventListener('submit', async function (event) {
-            event.preventDefault(); // Prevent default form submission
+function showLoader(){
+    loader.style.display = 'flex';
+}
 
-            // Get the form data
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
+function hideLoader(){
+    loader.style.display = 'none';
+}
 
-            // Check if the passwords match
-            if (password !== confirmPassword) {
-                alert('Passwords do not match');
-                return;
-            }
+// Capture the form element
+const signupForm = document.getElementById('signupForm');
 
-            // Prepare the data to send to the backend
-            const userData = {
-                username: username,
-                email: email,
-                phone: phone,
-                password: password
-            };
+// Add event listener to handle form submission
+signupForm.addEventListener('submit', async function (event) {
+    event.preventDefault(); // Prevent default form submission
 
-            try {
-                // Send a POST request to the backend API
-                const response = await fetch('http://localhost:3000/api/signup', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(userData)
-                });
+    showLoader();
 
-                // Handle the response from the backend
-                if (response.ok) {
-                    alert('Signup successful!');
-                    signupForm.reset(); // Reset the form fields after submission
-                } else {
-                    const errorData = await response.json();
-                    console.error('Backend Error:', errorData);
-                    alert('Error: ' + (errorData.message || 'Signup failed'));
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('There was a problem with the signup request');
-            }
+    // Get the form data
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+
+    // Check if the passwords match
+    if (password !== confirmPassword) {
+        hideLoader();
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Passwords do not match!',
         });
+        return;
+    }
+
+    // Prepare the data to send to the backend
+    const userData = {
+        username: username,
+        email: email,
+        phone: phone,
+        password: password
+    };
+
+    try {
+        // Send a POST request to the backend API
+        const response = await fetch('http://localhost:3000/api/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        });
+
+        // Handle the response from the backend
+        if (response.ok) {
+            hideLoader();
+            localStorage.setItem("userEmail", email); // ✅ Store email in localStorage on frontend
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Signup successful!',
+                timer: 1000,
+                showConfirmButton: true
+            });
+            window.location.href = './authenticate.html';
+            signupForm.reset(); // Reset the form fields after submission
+        } else {
+            const errorData = await response.json();
+            console.error('Backend Error:', errorData);
+            hideLoader();
+            Swal.fire({
+                icon: 'error',
+                title: 'Signup Failed',
+                text: errorData.message || 'An error occurred during signup',
+            });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        hideLoader();
+        Swal.fire({
+            icon: 'error',
+            title: 'Connection Error',
+            text: 'There was a problem connecting to the server. Please try again.',
+        });
+    }
+});
     </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 </body>
 
 </html>

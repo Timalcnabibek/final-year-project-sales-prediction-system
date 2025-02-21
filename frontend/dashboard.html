@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Slider</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            width: 100%;
+            background-color: rgba(51, 51, 51, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .navbar .logo {
+            font-size: 18px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .navbar .menu a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        .navbar .search input {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .navbar .settings {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar .settings a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        /* Slider Container */
+        .slider-container {
+            /* border: 2px solid black; */
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            margin-top: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Individual Slide */
+        .slide {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            /* border: 2px solid black; */
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        /* Active Slide */
+        .slide.active {
+            opacity: 1;
+            position: relative;
+        }
+
+        /* Text Section */
+        .slide-content {
+            width: 50%;
+            margin-left: 30px;
+            margin-top: 120px;
+            text-align: left;
+            color: rgb(179, 157, 17);
+            font-size: 2rem;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        /* Shop Button */
+        .shop-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 2rem;
+            background-color: rgb(181, 205, 44);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .shop-btn:hover {
+            background-color: darkblue;
+        }
+
+        /* Image Section */
+        .image-container {
+            width: 50%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Navigation Buttons */
+        .prev,
+        .next {
+            border: 2px solid black;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px 15px;
+            font-size: 20px;
+            border-radius: 5px;
+            z-index: 10;
+        }
+
+        .prev {
+            left: 10px;
+        }
+
+        .next {
+            right: 10px;
+        }
+
+        .prev:hover,
+        .next:hover {
+            background-color: black;
+        }
+
+        .short-description {
+            margin-top: 10px;
+            height: 70px;
+            width: 1540px;
+            margin-left: 20px;
+            display: flex;
+            /* Enable flexbox */
+            align-items: center;
+            /* Center vertically */
+            justify-content: center;
+            /* Center horizontally */
+            background-color: rgb(170, 187, 187);
+        }
+
+        /* Ensure text is centered */
+        .short-description h2 {
+            text-align: center;
+            font-size: 1.5rem;
+            color: black;
+        }
+
+
+
+
+
+        /* CSS */
+        .button-63 {
+            align-items: center;
+            background-image: linear-gradient(144deg, #AF40FF, #5B42F3 50%, #00DDEB);
+            border: 0;
+            border-radius: 8px;
+            box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+            box-sizing: border-box;
+            color: #FFFFFF;
+            display: flex;
+            font-family: Phantomsans, sans-serif;
+            font-size: 20px;
+            justify-content: center;
+            line-height: 1em;
+            max-width: 100%;
+            min-width: 140px;
+            padding: 19px 24px;
+            text-decoration: none;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .button-63:active,
+        .button-63:hover {
+            outline: 0;
+        }
+
+        @media (min-width: 768px) {
+            .button-63 {
+                font-size: 24px;
+                min-width: 196px;
+            }
+
+            .category {
+                min-width: 196px;
+            }
+        }
+
+        .category {
+            border: 2px solid black;
+            display: flex;
+            /* Arrange circles in a row */
+            justify-content: space-between;
+            /* Center horizontally */
+            gap: 20px;
+            /* Space between circles */
+            margin-top: 20px;
+            height: 150px;
+            flex-wrap: wrap;
+            /* Allows wrapping if screen is small */
+        }
+
+        .cat-container {
+            display: flex;
+            flex-direction: column;
+            /* Stack circle and text */
+            align-items: center;
+            /* Center elements */
+            justify-content: center;
+        }
+
+        #cat {
+            padding-left: 20px;
+            width: 100px;
+            /* Circle size */
+            height: 100px;
+            /* Circle size */
+            background-color: lightblue;
+            /* Example color */
+            border-radius: 50%;
+            /* Makes it a perfect circle */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            /* Optional shadow */
+        }
+
+        .cat-container p {
+            margin-top: 8px;
+            /* Space between circle and text */
+            font-size: 16px;
+            color: black;
+            text-align: center;
+        }
+        
+        h3 {
+            padding-top: 160px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+
+        .trending {
+            padding: 20px;
+        }
+
+        .for_men {
+            border-radius: 20px;
+            background-color: red;
+            margin: 0 auto;
+            width: 80%;
+        }
+
+        .products {
+            display: flex;
+            height: 300px;
+            border: 2px solid black;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">Logo</div>
+        <div class="menu">
+            <a href="#">Home</a>
+            <a href="#">Products</a>
+            <a href="#">Men</a>
+            <a href="#">Ladies</a>
+        </div>
+        <div class="search">
+            <input type="text" placeholder="Search Bar">
+        </div>
+        <div class="settings">
+            <a href="#">🛒</a>
+            <a href="#">🔄</a>
+            <a href="#">⚙️</a>
+        </div>
+    </div>
+
+    <!-- Slider Section -->
+    <div class="slider-container">
+        <div class="slide active">
+            <div class="slide-content">
+                <h1>Exclusive Styles Just for You</h1><br>
+                <button class="button-63">Shop Now →</button>
+            </div>
+            <div class="image-container" style="background-image: url('./image/lv.png');"></div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Discover the New Collection</h1><br>
+                <button class="button-63">Shop Now →</button>
+            </div>
+            <div class="image-container" style="background-image: url('./image/lv.jpg');"></div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Upgrade Your Wardrobe Today</h1><br>
+                <button class="button-63">Shop Now →</button>
+            </div>
+            <div class="image-container" style="background-image: url('./image/lv.jpg');"></div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <button class="prev" onclick="changeSlide(-1)">❮</button>
+        <button class="next" onclick="changeSlide(1)">❯</button>
+    </div>
+
+    <div class="short-description">
+        <h2>Get 20% Discount On Your First Purchase</h2>
+    </div>
+    <br><br><br>
+
+
+    <!-- Category based on brands -->
+    <h2
+        style="display:flex; justify-content: center; padding: 20px; margin-top:90px; margin: 0 auto; border: 2px solid black; width: fit-content; background-color: #00DDEB;">
+        Dresses based on Catogory and trends</h2>
+
+    <div class="category">
+        <div class="cat-container">
+            <div id="cat" style="padding: 10px;"></div>
+            <p>Brand</p>
+        </div>
+        <div class="cat-container">
+            <div id="cat"></div>
+            <p>Category 1</p>
+        </div>
+        <div class="cat-container">
+            <div id="cat"></div>
+            <p>Category 2</p>
+        </div>
+        <div class="cat-container">
+            <div id="cat"></div>
+            <p>Category 3</p>
+        </div>
+        <div class="cat-container">
+            <div id="cat"></div>
+            <p>Category 4</p>
+        </div>
+        <div class="cat-container">
+            <div id="cat"></div>
+            <p>Category 5</p>
+        </div>
+    </div>
+
+
+    <!-- Trending Products -->
+    <h3>New and Trending Products</h3>
+
+    <div class="trending">
+        <div class="for_men">
+            <h3>For Men</h3>
+            <div class="products">
+                <div id="product"></div>
+                <div id="product"></div>
+                <div id="product"></div>
+            </div>
+        </div>
+    </div>
+
+
+    
+    <script>
+        let slides = document.querySelectorAll(".slide");
+        let currentIndex = 0;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove("active");
+                if (i === index) {
+                    slide.classList.add("active");
+                }
+            });
+        }
+
+        function changeSlide(direction) {
+            currentIndex += direction;
+            if (currentIndex < 0) {
+                currentIndex = slides.length - 1;
+            } else if (currentIndex >= slides.length) {
+                currentIndex = 0;
+            }
+            showSlide(currentIndex);
+        }
+
+        setInterval(() => {
+            changeSlide(1);
+        }, 3000);
+    </script>
+
+</body>
+
+</html>
